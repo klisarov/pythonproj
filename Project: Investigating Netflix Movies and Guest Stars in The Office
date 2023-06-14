@@ -1,0 +1,50 @@
+%matplotlib inline
+import pandas as pd
+import matplotlib.pyplot as plt
+office_df = pd.read_csv('datasets/office_episodes.csv', parse_dates=['release_date'])
+cols = []
+sizes = []
+for ind, row in office_df.iterrows():
+    if row['scaled_ratings'] < 0.25:
+        cols.append('red')
+    elif row['scaled_ratings'] < 0.50:
+        cols.append('orange')
+    elif row['scaled_ratings'] < 0.75:
+        cols.append('lightgreen')
+    else:
+        cols.append('darkgreen')     
+for ind, row in office_df.iterrows():
+    if row['has_guests'] == False:
+        sizes.append(25)
+    else:
+        sizes.append(250)
+office_df['colors'] = cols
+office_df['sizes'] = sizes
+non_guest_df = office_df[office_df['has_guests'] == False]
+guest_df = office_df[office_df['has_guests'] == True]      
+plt.rcParams['figure.figsize'] = [11, 7]
+plt.style.use('fivethirtyeight')
+fig = plt.figure()
+plt.scatter(x=non_guest_df.episode_number, y=non_guest_df.viewership_mil, \
+                
+                 c=non_guest_df['colors'], s=25)
+
+plt.scatter(x=guest_df.episode_number, y=guest_df.viewership_mil, \
+                 
+                 c=guest_df['colors'], marker='*', s=250)
+
+
+plt.title("Popularity, Quality, and Guest Appearances on the Office", fontsize=28)
+
+
+plt.xlabel("Episode Number", fontsize=18)
+
+
+plt.ylabel("Viewership (Millions)", fontsize=18)
+
+
+plt.show()
+
+
+print(office_df[office_df['viewership_mil'] > 20]['guest_stars'])
+top_star = 'Jessica Alba'
